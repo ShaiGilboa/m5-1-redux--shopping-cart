@@ -153,7 +153,9 @@ Our state shape:
 */
 
 const FridgeContents = () => {
-  const fridgeItems = /* TODO */
+  const fridgeItems = useSelector((state) => {
+    return state.fridge;
+  })
 
   return (
     <div>
@@ -197,7 +199,11 @@ const App = () => {
   // We're going to watch OUR favourite movie,
   // in our BOYFRIEND's favourite genre.
   // (Terror at Jarry Park)
-  const movie = /* TODO */
+  const movie = useSelector(state => {
+    const myFavouriteMovies = state.myFavouriteMovies;
+    const boyfFavouriteGanre = state.boyfriendFavouriteGenre:
+    return myFavouriteMovies[boyfFavouriteGanre]
+  })
 
   return (
     <div>
@@ -226,7 +232,11 @@ Our state shape:
 const UserProfile = () => {
   // `streetAddress` should be formatted as:
   // "129 W. 81st St, Apartment 5A"
-  const streetAddress = /* TODO */
+  const address = useSelector(state => {
+    const part1 = state.address.line1;
+    const part2 = state.address.line2;
+    return part2 ?  `${part1}, ${part2}`: `${pat1}`;
+  })
 
   return (
     <div>
@@ -266,8 +276,12 @@ Our state shape:
 */
 
 const OnlineUsers = () => {
-  const myStatus = /* TODO */
-  const onlineUsers = /* TODO */
+  const myStatus = useSelector(state => state.myStatus)
+  const onlineUsers = useSelector(state => {                      //state.users.filter(user.online)
+    const totalUsers = state.users
+    const onlineUsers = totalUsers.filter(user=>user.online)
+    return onlineUsers;
+  })
 
   return onlineUsers.map(user => (
     <div key={user.name}>
@@ -362,12 +376,12 @@ Wire in the action and dispatch it.
 ---
 
 ```js
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 
 import { pokeUser } from '../actions';
 
 const OnlineUsers = () => {
-  // TODO: Something missing here...
+  const dispatch = useDispatch();
 
   const onlineUsers = useSelector((state) => {
     return state.users.filter((user) => user.online);
@@ -375,7 +389,7 @@ const OnlineUsers = () => {
 
   return onlineUsers.map((user) => (
     <div key={user.name}>
-      <button onClick={/* TODO */}>Message {user.name}</button>
+      <button onClick={() => dispatch(pokeUser(user)))}>Message {user.name}</button>
     </div>
   ));
 };
@@ -395,7 +409,7 @@ const FridgeForm = () => {
   return (
     <form
       onSubmit={() => {
-        /* TODO */
+        dispatch(addItemToFridge(value))
       }}
     >
       <input type='text' onChange={(ev) => setValue(ev.target.value)} />
@@ -419,6 +433,7 @@ const Modal = () => {
   React.useEffect(() => {
     const handleKeydown = (ev) => {
       // TODO: Close modal when 'Escape' is pressed
+      if(ev.key==='Escape') dispatch(dismissModal());
       // (Hint: use ev.key)
     };
 
